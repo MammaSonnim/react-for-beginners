@@ -6,14 +6,54 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
 
     <style>
         .none {
             display: none;
         }
 
-        .red {
-            color: #FF0000;
+        body {
+            background: rgba(0, 102, 255, 0.38);
+            font-family: sans-serif;
+        }
+
+        p {
+            margin: 0 0 5px;
+        }
+
+        .news {
+            display: grid;
+            grid-template-areas:'heading heading'
+                                'article article'
+                                'article article'
+                                'count count'
+        }
+
+        .news__heading {
+            grid-area: heading;
+        }
+
+        .news__count {
+            grid-area: count;
+            margin: 10px 0 0 0;
+            display: block;
+        }
+
+        .news__article {
+            margin: 0 0 5px;
+        }
+
+        .article {
+            background: #FFF;
+            border: 1px solid rgba(0, 89, 181, 0.82);
+            box-shadow: 2px 2px 5px -1px rgb(0, 81, 202);
+            padding: 3px 5px;
+        }
+
+        .article__author {
+            text-decoration: underline;
+            color: #007DDC;
         }
     </style>
 </head>
@@ -46,28 +86,45 @@
 
     const Article = ({ data: { author, text} }) => {
         return (
-            <article>
-                <p className="news__author">{author}:</p>
-                <p className="news__text">{text}</p>
+            <article className="news__article article">
+                <p className="article__author">{author}:</p>
+                <p className="article__text">{text}</p>
             </article>
         )
     }
 
+    Article.propTypes = {
+        data: PropTypes.shape({
+            author: PropTypes.string.isRequired,
+            text: PropTypes.string.isRequired
+        })
+    }
+
     class News extends React.Component {
-        render() {
+        renderArticles = () => {
             const { news } = this.props;
 
-            const newsTemplate = news.length ? news.map(function(item) {
+            return news.length ? news.map(function(item) {
                 return <Article key={item.id} data={item} />
             }) : <p>Новостей нет</p>;
 
+        }
+
+        render() {
+            const { news } = this.props;
+
             return (
-                    <div className="news">
-                        {newsTemplate}
-                        {news.length ? <strong>Всего новостей: {news.length}</strong> : null}
-                    </div>
+                <section className="news">
+                    <h2 className="news__heading">Новости</h2>
+                    {this.renderArticles()}
+                    {news.length ? <strong className="news__count">Всего новостей: {news.length}</strong> : null}
+                </section>
             )
         }
+    }
+
+    News.propTypes = {
+        news: PropTypes.array.isRequired
     }
 
 
