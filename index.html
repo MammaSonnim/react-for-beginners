@@ -55,6 +55,10 @@
             text-decoration: underline;
             color: #007DDC;
         }
+
+        .test-input {
+            margin: 0 5px 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +99,11 @@
 
         handleReadMoreClick = (e) => {
             e.preventDefault();
-            this.setState({ visible: true });
+            this.setState((prevState, props) => {
+                if (!prevState.visible) {
+                    return { visible: true }
+                }
+            });
         }
 
         render() {
@@ -106,15 +114,8 @@
                 <article className="news__article article">
                     <p className="article__author">{author}:</p>
                     <p className="article__text">{text}</p>
-                    {
-                        !visible && <a onClick={this.handleReadMoreClick} href="#" className="article__readmore">Подробнее</a>
-
-                    }
-
-                    {
-                        visible && <p className="article__text">{fullText}</p>
-
-                    }
+                    { !visible && <a onClick={this.handleReadMoreClick} href="#" className="article__readmore">Подробнее</a> }
+                    { visible && <p className="article__text">{fullText}</p> }
                 </article>
             )
         }
@@ -124,7 +125,7 @@
         data: PropTypes.shape({
             author: PropTypes.string.isRequired,
             text: PropTypes.string.isRequired,
-            fullText: PropTypes.string.isRequired,
+            fullText: PropTypes.string.isRequired
         })
     }
 
@@ -145,7 +146,8 @@
                 <section className="news">
                     <h2 className="news__heading">Новости</h2>
                     {this.renderArticles()}
-                    {news.length ? <strong className="news__count">Всего новостей: {news.length}</strong> : null}
+                    {news.length ? <strong className="news__count">
+                        Всего новостей: {news.length}</strong> : null}
                 </section>
             )
         }
@@ -155,10 +157,49 @@
         news: PropTypes.array.isRequired
     }
 
+    class TestInput extends React.Component {
+        state = {
+            value: ''
+        }
+
+        handleOnChange = (e) => {
+           e.preventDefault();
+           this.setState({ value: e.currentTarget.value })
+        }
+
+        handleSubmit = () => {
+            const { value } = this.state;
+
+            console.log(value)
+
+        }
+
+        renderSubmit = () => {
+            return <button onClick={this.handleSubmit}>Отправить</button>
+        }
+
+        render() {
+            const { value } = this.state;
+
+            return (
+                <React.Fragment>
+                    <input
+                            onChange={this.handleOnChange}
+                            type="text"
+                            className="test-input"
+                            value={value}
+                            placeholder="Введите значение"/>
+                    {this.renderSubmit()}
+                </React.Fragment>
+            )
+        }
+    }
+
 
     const App = () => {
         return (
                 <React.Fragment>
+                    <TestInput/>
                     <News news={myNews}/>
                 </React.Fragment>
         )
