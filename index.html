@@ -56,8 +56,32 @@
             color: #007DDC;
         }
 
-        .test-input {
+        .add {
             margin: 0 5px 5px 0;
+            width: 210px;
+            border: 1px dashed rgba(0, 89, 181, 0.82);
+            padding: 5px;
+        }
+        .add__author, .add__text, .add__btn, .add__checkrule {
+            display: block;
+            margin: 0 0 5px 0;
+            padding: 5px;
+            width: 94%;
+            border: 1px solid rgba(0, 89, 181, 0.82);
+        }
+        .add__checkrule {
+            border: none;
+            font-size: 12px;
+        }
+        .add__btn {
+            box-sizing: content-box;
+            color: #FFF;
+            text-transform: uppercase;
+            background: #007DDC;
+        }
+        .add__btn:disabled {
+            background: #CCC;
+            color: #999;
         }
     </style>
 </head>
@@ -157,32 +181,69 @@
         news: PropTypes.array.isRequired
     }
 
-    class TestInput extends React.Component {
-        constructor(props) {
-            super(props);
-
-            this.input = React.createRef();
+    class Add extends React.Component {
+        state = {
+            author: '',
+            text: '',
+            agree: false
         }
 
-        handleSubmit = () => {
-            console.log(this.input.current.value)
+        handleSubmit = (e) => {
+            e.preventDefault();
+
+            const { author, text } = this.state;
+
+            console.log(author, text);
+        }
+
+        validate = () => {
+            const { author, text, agree } = this.state;
+
+            return agree && author.trim() && text.trim();
+
         }
 
         renderSubmit = () => {
-            return <button onClick={this.handleSubmit}>Отправить</button>
+            return <button className="add__btn"
+                           onClick={this.handleSubmit}
+                           disabled={!this.validate()}>
+                Показать alert</button>
+        }
+
+        handleChange = (e) => {
+            const { id, value } = e.currentTarget;
+
+            this.setState({ [id]: value })
+        }
+
+        handleCheck = (e) => {
+            this.setState({ agree: e.currentTarget.checked })
         }
 
         render() {
+            const { author, text, agree } = this.state;
+
             return (
-                <React.Fragment>
+                <form className="add">
                     <input
+                            id="author"
+                            value={author}
+                            onChange={this.handleChange}
                             type="text"
-                            className="test-input"
-                            ref={this.input}
-                            defaultValue=""
-                            placeholder="Введите значение"/>
+                            className="add__author"
+                            placeholder="Ваше имя"/>
+                    <textarea
+                            id="text"
+                            value={text}
+                            onChange={this.handleChange}
+                            className="add__text"
+                            placeholder="Текст новости">
+                    </textarea>
+                    <label className="add__checkrule">
+                        <input type="checkbox" onChange={this.handleCheck} /> Я согласен с правилами
+                    </label>
                     {this.renderSubmit()}
-                </React.Fragment>
+                </form>
             )
         }
     }
@@ -191,7 +252,7 @@
     const App = () => {
         return (
                 <React.Fragment>
-                    <TestInput/>
+                    <Add/>
                     <News news={myNews}/>
                 </React.Fragment>
         )
