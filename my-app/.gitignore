@@ -1,0 +1,31 @@
+vendor
+bower_components
+node_modules
+build
+temp
+tmp
+.idea
+.jshintrc
+.http-mitm-proxy
+.vscode
+report-*.xml
+npm-debug.log
+*.lock
+
+# Spotlight, Explorer, etc etc
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# explicit ignore
+*.ignore.*
+*.ignore/
+
+yarn-debug.log*
+yarn-error.log*
+
+
