@@ -2,11 +2,32 @@ import React, { Component, Fragment } from 'react';
 import './App.css';
 import Add from './components/Add';
 import News from './components/News';
-import newsData from './data/newsData.json';
 
 export default class App extends Component {
     state = {
-        news: newsData
+        news: null,
+        isLoading: false
+    }
+
+    // news null isLoading false — запроса нет или выполнился с ошибкой
+    // news null isLoading true — запрос выполнятся
+    // news [] — новостей нет
+    // news [1, 2, 3] — новости есть и они загружены
+
+    componentDidMount() {
+        this.setState({ isLoading: true });
+
+        fetch('http://localhost:3000/data/newsData.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                this.setState({
+                    news: data,
+                    isLoading: false
+                })
+            })
+
     }
 
     handleAddNews = (data) => {
@@ -17,10 +38,13 @@ export default class App extends Component {
     }
 
     render() {
+        const { news, isLoading } = this.state;
+
         return (
             <Fragment>
                 <Add onAddNews={this.handleAddNews}/>
-                <News news={this.state.news}/>
+                { Array.isArray(news) && <News news={news}/> }
+                { isLoading && <p>Загружаю...</p> }
             </Fragment>
         )
     }
