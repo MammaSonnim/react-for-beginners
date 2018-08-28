@@ -35,7 +35,7 @@ export default class Add extends Component {
         return <button className="add__btn"
                        onClick={this.onBtnClickHandler}
                        disabled={!this.validate()}>
-            Показать alert</button>
+            Добавить новость</button>
     }
 
     handleChange = (e) => {

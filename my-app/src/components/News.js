@@ -5,24 +5,39 @@ import Article from './Article';
 
 
 export default class News extends Component {
-    renderArticles = () => {
-        const { news } = this.props;
+    state = {
+        filteredNews: this.props.news
+    }
 
-        return news.length ? news.map(function(item) {
+    componentWillReceiveProps(nextProps) {
+        let nextFilteredNews = [...nextProps.news];
+
+        nextFilteredNews.forEach(item => {
+            if (item.fullText.toLowerCase().indexOf('pubg') !== -1) {
+                item.fullText = 'СПАМ'
+            }
+        })
+
+        this.setState({ filteredNews: nextFilteredNews })
+    }
+
+    renderArticles = () => {
+        const { filteredNews } = this.state;
+
+        return filteredNews.length ? filteredNews.map(item => {
             return <Article key={item.id} data={item} />
         }) : <p>Новостей нет</p>;
-
     }
 
     render() {
-        const { news } = this.props;
+        const { filteredNews } = this.state;
 
         return (
             <section className="news">
                 <h2 className="news__heading">Новости</h2>
                 {this.renderArticles()}
-                {news.length ? <strong className="news__count">
-                    Всего новостей: {news.length}</strong> : null}
+                {filteredNews.length ? <strong className="news__count">
+                    Всего новостей: {filteredNews.length}</strong> : null}
             </section>
         )
     }
