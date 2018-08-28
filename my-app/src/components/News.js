@@ -9,8 +9,11 @@ export default class News extends Component {
         filteredNews: this.props.news
     }
 
-    componentWillReceiveProps(nextProps) {
-        let nextFilteredNews = [...nextProps.news];
+    static getDerivedStateFromProps(props, state) {
+        console.log('props', props);
+        console.log('state', state);
+
+        let nextFilteredNews = [...props.news];
 
         nextFilteredNews.forEach(item => {
             if (item.fullText.toLowerCase().indexOf('pubg') !== -1) {
@@ -18,7 +21,9 @@ export default class News extends Component {
             }
         })
 
-        this.setState({ filteredNews: nextFilteredNews })
+        return {
+            filteredNews: nextFilteredNews
+        }
     }
 
     renderArticles = () => {
