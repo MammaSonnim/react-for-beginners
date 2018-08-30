@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './App.css';
 import Add from './components/Add';
-import News from './components/News';
+import { News } from './components/News'
 
 export default class App extends Component {
     state = {
@@ -13,6 +13,24 @@ export default class App extends Component {
     // news null isLoading true — запрос выполнятся
     // news [] — новостей нет
     // news [1, 2, 3] — новости есть и они загружены
+
+    static getDerivedStateFromProps(props, state) {
+        let nextFilteredNews;
+
+        if (Array.isArray(state.news)) {
+            nextFilteredNews = [...state.news];
+
+            nextFilteredNews.forEach(item => {
+                if (item.fullText.toLowerCase().indexOf('pubg') !== -1) {
+                    item.fullText = 'СПАМ'
+                }
+            })
+        }
+
+        return {
+            filteredNews: nextFilteredNews || null
+        }
+    }
 
     componentDidMount() {
         this.setState({ isLoading: true });

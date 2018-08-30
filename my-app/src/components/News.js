@@ -1,53 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import '../App.css';
 import PropTypes from 'prop-types';
 import Article from './Article';
 
-
-export default class News extends Component {
-    state = {
-        filteredNews: this.props.news
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        console.log('props', props);
-        console.log('state', state);
-
-        let nextFilteredNews = [...props.news];
-
-        nextFilteredNews.forEach(item => {
-            if (item.fullText.toLowerCase().indexOf('pubg') !== -1) {
-                item.fullText = 'СПАМ'
-            }
-        })
-
-        return {
-            filteredNews: nextFilteredNews
-        }
-    }
-
-    renderArticles = () => {
-        const { filteredNews } = this.state;
-
-        return filteredNews.length ? filteredNews.map(item => {
+const News = ({ news }) => {
+    const renderArticles = () => {
+        return news.length ? news.map(item => {
             return <Article key={item.id} data={item} />
         }) : <p>Новостей нет</p>;
     }
 
-    render() {
-        const { filteredNews } = this.state;
-
-        return (
-            <section className="news">
-                <h2 className="news__heading">Новости</h2>
-                {this.renderArticles()}
-                {filteredNews.length ? <strong className="news__count">
-                    Всего новостей: {filteredNews.length}</strong> : null}
-            </section>
-        )
-    }
+    return (
+        <section className="news">
+            <h2 className="news__heading">Новости</h2>
+            {renderArticles()}
+            {news.length ? <strong className="news__count">
+                Всего новостей: {news.length}</strong> : null}
+        </section>
+    )
 }
 
 News.propTypes = {
     news: PropTypes.array.isRequired
 }
+
+export { News };
